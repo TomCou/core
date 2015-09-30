@@ -1,0 +1,121 @@
+
+import net.java.games.input.*;
+import java.io.*;
+
+public class SystemController {
+	
+	static private SimpleIO io;
+	static private boolean shutdown;
+
+ 	public static void main(String[] args) { 
+ 		
+ 		// TODO: Add last controller
+ 		String[] controllerNames = { "PLAYSTATION(R)3 Controller (E0:AE:5E:BE:52:B3)"
+ 									,"PLAYSTATION(R)3 Controller (00:23:06:BE:D8:62)"
+ 									,"PLAYSTATION(R)3 Controller (E0:AE:5E:9B:E5:3B)"
+ 									,"PLAYSTATION(R)3 Controller (E0:AE:5E:2C:4C:51)"
+ 									,"PLAYSTATION(R)3 Controller (00:07:04:81:A2:69)"
+ 									,"PLAYSTATION(R)3 Controller (E0:AE:5E:69:43:DD)"
+ 									,"PLAYSTATION(R)3 Controller (E0:AE:5E:0E:98:39)"
+ 									,"PLAYSTATION(R)3 Controller (00:07:04:D2:AF:CB)"}; 		
+ 		
+ 		io = new SimpleIO();
+ 		
+ 		shutdown = false;
+ 		boolean found = false;
+
+ 		int[] baseArray = {1,31,61,91,121,151,181,211};
+
+		System.out.println("JInput version: " + Version.getVersion()); 
+		ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment(); 
+		Controller[] cs = ce.getControllers();
+		if(cs.length != 0){
+			for (int i = 0; i < cs.length; i++){
+				if(cs[i].getName().contains("PLAYSTATION") != false){
+					System.out.println(cs[i].getName());
+					for (int j = 0; j<controllerNames.length;j++){
+						if (cs[i].getName().contains(controllerNames[j])){
+							found = true;
+							RemoteController t = new RemoteController (io, cs[i],baseArray[j]);
+							new Thread(t).start();
+						}
+					}
+				}
+			}
+			
+			int in = -1;
+			int inRobot = 0;
+			int inCommand = 0;
+			//If a valid controller was found continue operations
+			if(found){
+				System.out.println("Playstation DualShock 3 Connected");
+				if(io.portFound){
+					while(true){
+						//Check to see if there is input
+						try{
+							if (!(io.input.available() == 0)){
+								System.out.print("Ardunio Return ");
+								in = io.input.read();
+								System.out.println("is: " + in);
+								
+								inCommand = in%30;
+								//Will return a value from 1, 2, 3 .. 29, 0. 0 corresponds to 30
+								//inCommand = input % 30;
+								if (inCommand == 0)
+									inCommand += 30;
+								
+								//Get the robot that sent the command (1 indexed) [0-7]
+								//This works for high command values (would not work for low values)
+								inRobot = (int)((in/31) + 1);
+								
+								System.out.println("Robot is: " + inRobot);
+								System.out.println("Command is "+ inCommand);
+							}
+						}
+						catch(IOException e){
+							System.out.println("Arduino Communication Error");
+							close();
+							break;
+						}
+						catch(Exception e){
+							System.out.println("Unknow Error");
+							close();
+							break;
+						}
+					}
+				}
+				else{
+					System.out.println("No Xbee Tranciever Found");
+					System.out.println("Please Connect an Xbee Transciever");
+					close();
+				}
+			}
+			else{
+				System.out.println("No Valid Controller Found");
+				System.out.println("Please Connect a PlayStation DualShock 3 Controller");
+				close();
+			}
+		}
+	    else{
+			System.out.println("No Controller Found");
+			System.out.println("Please Connect a PlayStation DualShock 3 Controller");
+			close();
+		}		
+	}
+ 	
+ 	
+ 	static private void close(){
+ 		System.out.println("Disconnecting Xbee Transiever");
+ 		io.disconnect();
+ 		
+ 		//Close Controller Threads
+ 		//System.out.println("Disconnecting Controllers");
+ 		//Working on it...?
+ 		//Tell all controllers to shutdown
+ 		shutdown = true;
+ 		
+ 		
+ 		System.out.println("Exiting Program.");
+ 		
+ 	}
+}

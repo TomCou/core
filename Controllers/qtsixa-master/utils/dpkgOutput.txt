@@ -1,0 +1,121 @@
+Package: bluez-utils
+Status: install ok installed
+Priority: extra
+Section: oldlibs
+Installed-Size: 75
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: all
+Source: bluez
+Version: 4.101-0ubuntu20
+Depends: bluetooth
+Description: Transitional package
+ This is a transitional package to assist with moving people to the
+ BlueZ 4.x stack.
+Homepage: http://www.bluez.org
+Original-Maintainer: Debian Bluetooth Maintainers <pkg-bluetooth-maintainers@lists.alioth.debian.org>
+
+Package: bluez-compat
+Status: install ok installed
+Priority: optional
+Section: admin
+Installed-Size: 467
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: amd64
+Source: bluez
+Version: 4.101-0ubuntu20
+Depends: libc6 (>= 2.15)
+Description: BlueZ 3.x compatibility binaries
+ This package provides the legacy binaries that were reminiscent of the
+ BlueZ 3.x pairing methods.  These binaries are not supported, and will
+ go away again in the future. The provided binaries are:
+ .
+ hidd
+ dund
+ pand
+Homepage: http://www.bluez.org
+Original-Maintainer: Debian Bluetooth Maintainers <pkg-bluetooth-maintainers@lists.alioth.debian.org>
+
+
+Package: checkinstall
+Status: install ok installed
+Priority: optional
+Section: admin
+Installed-Size: 504
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: amd64
+Version: 1.6.2-4ubuntu1
+Depends: dpkg-dev, file, libc6 (>= 2.14)
+Recommends: make
+Suggests: gettext
+Conffiles:
+ /etc/checkinstallrc 9c9ecdff583d5b3e79b4617aa16f9fe1
+Description: installation tracker
+ CheckInstall keeps track of all the files created or
+ modified by your installation script ("make install"
+ "make install_modules", "setup", etc), builds a
+ standard binary package and installs it in your
+ system giving you the ability to uninstall it with your
+ distribution's standard package management utilities.
+Homepage: http://checkinstall.izto.org
+Original-Maintainer: Andreas Noteng <andreas@noteng.no>
+
+Package: libusb-dev
+Status: install ok installed
+Priority: optional
+Section: libdevel
+Installed-Size: 245
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: amd64
+Source: libusb
+Version: 2:0.1.12-24
+Replaces: libusb0 (<< 1:0.1.5-1)
+Depends: libusb-0.1-4 (= 2:0.1.12-24), libc6-dev | libc-dev
+Description: userspace USB programming library development files
+ Library for programming USB applications without the knowledge
+ of Linux kernel internals.
+Original-Maintainer: Aurelien Jarno <aurel32@debian.org>
+Homepage: http://www.linux-usb.org/
+
+Package: libbluetooth-dev
+Status: install ok installed
+Priority: extra
+Section: libdevel
+Installed-Size: 404
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: amd64
+Source: bluez
+Version: 4.101-0ubuntu20
+Replaces: libsdp2-dev (<= 1.5.2)
+Provides: libbluetooth3-dev
+Depends: libbluetooth3 (= 4.101-0ubuntu20), libc6-dev | libc-dev
+Suggests: pkg-config
+Conflicts: bluez-pan, libbluetooth-dev, libsdp2-dev (<= 1.5.2)
+Description: Development files for using the BlueZ Linux Bluetooth library
+ BlueZ is the official Linux Bluetooth protocol stack. It is an Open Source
+ project distributed under GNU General Public License (GPL).
+Homepage: http://www.bluez.org
+Original-Maintainer: Debian Bluetooth Maintainers <pkg-bluetooth-maintainers@lists.alioth.debian.org>
+
+Package: joystick
+Status: install ok installed
+Priority: extra
+Section: utils
+Installed-Size: 164
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: amd64
+Version: 1:1.4.7-2
+Depends: libc6 (>= 2.15), libsdl1.2debian (>= 1.2.11)
+Recommends: evtest, inputattach
+Description: set of testing and calibration tools for joysticks
+ Some useful tools for using joysticks:
+  ffcfstress(1) - force-feedback stress test
+  ffmvforce(1)  - force-feedback orientation test
+  ffset(1)      - force-feedback configuration tool
+  fftest(1)     - general force-feedback test
+  jstest(1)     - joystick test
+  jscal(1)      - joystick calibration tool
+ .
+ evtest and inputattach, which used to be part of this package, are now
+ available separately.
+Original-Maintainer: Stephen Kitt <skitt@debian.org>
+Homepage: https://sourceforge.net/projects/linuxconsole/

@@ -1,0 +1,102 @@
+
+import net.java.games.input.*;
+
+public class USBControllerTest {
+
+ 	public static void main(String[] args) { 
+ 		
+ 		// TODO: Add last controller
+ 		String[] cont1 = {"PLAYSTATION(R)3 Controller (E0:AE:5E:BE:52:B3)"
+ 						,"PLAYSTATION(R)3 Controller (00:23:06:BE:D8:62)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:9B:E5:3B)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:2C:4C:51)"
+ 						,"PLAYSTATION(R)3 Controller (00:07:04:81:A2:69)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:69:43:DD)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:0E:98:39)"
+ 						,"345"}; //add other remote names here. use .getName() on the cs array
+ 		
+ 		SimpleIO io = new SimpleIO();
+ 		
+ 		boolean found = false;
+
+ 		int[] baseArray = {1,31,61,91,121,151,181,211};
+
+		System.out.println("JInput version: " + Version.getVersion()); 
+		ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment(); 
+		Controller[] cs = ce.getControllers();
+		if(cs.length != 0){
+			for (int i = 0; i < cs.length; i++) 
+			{
+				if(cs[i].getName().contains("PLAYSTATION") != false)
+				{
+					System.out.println(cs[i].getName());
+					for (int j = 0; j<cont1.length;j++)
+					{
+						if (cs[i].getName().contains(cont1[j]))
+						{
+							found = true;
+							remoteController t = new remoteController (io, cs[i],baseArray[j]);
+							new Thread(t).start();
+						}
+					}
+				}
+			}
+			//If a valid controller was found continue operations
+			if(found){				
+				//String to store input from Arduino
+				int output = 1;
+				int input = 0;
+				int inCommand;
+				int inRobot;
+				
+				io.writeByte((byte)output);
+				//Run forever
+				while(true){
+					//Check to see if there is input
+					if (io.isInputReaderFlag()){
+						try{
+							//While there is more input, continue writing to screen
+							while(((input = io.inputReader.read()) != 0) && (io.inputReader.ready())){
+								System.out.println(input);
+								
+								//Will return a value from 1, 2, 3 .. 29, 0. 0 corresponds to 30
+								//inCommand = input % 30;
+								if (inCommand == 0)
+									inCommand += 30;
+								
+								//Get the robot that sent the command (1 indexed) [0-7]
+								//This works for high command values (would not work for low values)
+								inRobot = input % 31;
+								
+							}
+							//Reset input flag
+							io.setInputReaderFlag(false);
+						}
+						//If there is a problem reader from the Arduino, let the user know and carry on
+						catch(Exception e){
+							System.out.println("Error: Arduino Input Communication");
+						}
+					}
+					//reset values to default
+					else{
+						inRobot = -1;
+						inCommand = -1;
+						input = 0;
+					}
+				}
+			}
+			else{
+				System.out.println("No Valid Controller Found");
+				System.out.println("Please Connect a PlayStation DualShock 3 Controller");
+				System.out.println("Exiting Program");
+			}
+		}
+	    else{
+			System.out.println("No Controller Found");
+			System.out.println("Please Connect a PlayStation DualShock 3 Controller");
+			System.out.println("Exiting Program");
+		}
+		
+		io.disconnect();
+	}
+}

@@ -1,0 +1,63 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+
+import net.java.games.input.*;
+
+public class USBControllerTest {
+
+ 	public static void main(String[] args) { 
+ 		
+ 		// TODO: Add last controller
+ 		String[] cont1 = {"PLAYSTATION(R)3 Controller (E0:AE:5E:BE:52:B3)"
+ 						,"PLAYSTATION(R)3 Controller (00:23:06:BE:D8:62)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:9B:E5:3B)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:2C:4C:51)"
+ 						,"PLAYSTATION(R)3 Controller (00:07:04:81:A2:69)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:69:43:DD)"
+ 						,"PLAYSTATION(R)3 Controller (E0:AE:5E:0E:98:39)"
+ 						,"345"}; //jon add other remote names here. use .getName() on the cs array
+ 		
+ 		SimpleWrite2 writer = new SimpleWrite2();
+ 		
+ 		int[] bytearray = {1,20,40,60,80,100,120,140};
+
+ 		//Green triangle = 33
+ 		//Red Circle = 34
+ 		//Purple X = 35
+ 		//Square  = 36
+ 		
+ 		//Forward = 4
+ 		//Right = 5
+ 		//Back = 6
+ 		//Left = 7
+ 		
+ 		//Start = 3
+
+		System.out.println("JInput version: " + Version.getVersion()); 
+		ControllerEnvironment ce = ControllerEnvironment.getDefaultEnvironment(); 
+		Controller[] cs = ce.getControllers(); 
+		for (int i = 0; i < cs.length; i++) 
+		{
+			//System.out.println(cs[i].getComponents().length);
+			//System.out.println(cs[i].getName().contains("PLAYSTATION"));
+			if(cs[i].getName().contains("PLAYSTATION") != false)
+			{
+				System.out.println(cs[i].getName());
+				for (int j = 0; j<cont1.length;j++)
+				{
+					if (cs[i].getName().contains(cont1[j])){
+						remoteController t = new remoteController (writer, cs[i],bytearray[j]);
+						new Thread(t).start();
+					}
+				}
+			}
+		}
+		
+		
+		
+	}
+
+
+}

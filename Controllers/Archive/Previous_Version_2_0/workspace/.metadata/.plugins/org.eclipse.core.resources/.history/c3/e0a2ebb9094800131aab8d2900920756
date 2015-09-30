@@ -1,0 +1,72 @@
+import java.lang.reflect.Array;
+
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
+
+
+public class remoteController implements Runnable {
+	
+	private static final int SELECT = 0;
+	private static final int LEFT_STICK_PUSH = 1;
+	private static final int RIGHT_STICK_PUSH = 2;
+	private static final int START = 3;
+	private static final int UP_D = 4;
+	private static final int RIGHT_D = 5;
+	private static final int DOWN_D = 6;
+	private static final int LEFT_D = 7;
+	private static final int L2_D = 8;
+	private static final int R2_D = 9;
+	private static final int L1_D = 10;
+	private static final int R1_D = 11;
+	private static final int GREEN_TRIANLGLE_D = 12;
+	private static final int RED_CIRCLE_D = 13;
+	private static final int BLUE_X_D = 14;
+	private static final int PURPLE_SQUARE_D = 15;
+	private static final int PS = 16;
+	private static final int LEFT_HOR = 17;
+	private static final int LEFT_VER = 18;
+	private static final int RIGHT_HOR = 19;
+	private static final int RIGHT_VER = 20;
+	private static final int XZ_PLANE = 21;
+	private static final int YZ_PLANE = 22;
+	private static final int FACE = 23;
+	private static final int UNKNOWN = 24;
+	private static final int UP_A = 25;
+	private static final int RIGHT_A = 26;
+	private static final int DOWN_A = 27;
+	private static final int LEFT_A = 28;
+	private static final int L2_A = 29;
+	private static final int R2_A = 30;
+	private static final int L1_A = 31;
+	private static final int R1_A = 32;
+	private static final int GREEN_TRIANGLE_A = 33;
+	private static final int RED_CIRCLE_A = 34;
+	private static final int BLUE_X_A = 35;
+	private static final int PURPLE_SQUARE_A = 36;
+	
+	private Controller controller;
+	private Component[] cps;
+	private SimpleWrite2 outwrite;
+	private int mybyte;
+	
+	
+	remoteController(SimpleWrite2 writer, Controller ctr, int startbyte)
+	{
+		this.controller = ctr;
+		this.outwrite = writer;
+		this.mybyte = startbyte;
+		System.out.println("Hello " + ctr.getName());
+	}
+	
+	
+	public void run()
+	{
+		while(true)
+		{
+			controller.poll();			
+			cps = controller.getComponents();
+		}
+		
+	}
+
+}

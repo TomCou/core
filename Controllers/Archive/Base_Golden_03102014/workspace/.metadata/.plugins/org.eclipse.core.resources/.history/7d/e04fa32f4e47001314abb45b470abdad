@@ -1,0 +1,52 @@
+import java.lang.reflect.Array;
+
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
+
+
+public class remoteController implements Runnable {
+	
+	private static int GREEN_TRIANGLE = 33;
+	private static int RED_CIRCLE = 34;
+	private static int BLUE_X = 35;
+	private static int PURPLE_SQUARE = 36;
+	private static int FORWARD = 4;
+	private static int RIGHT = 5;
+	private static int BACK = 6;
+	private static int LEFT = 7;
+	private static int START = 8;
+	
+	private Controller controller;
+	private Component[] cps;
+	private SimpleWrite2 outwrite;
+	private int mybyte;
+	
+	
+	remoteController(SimpleWrite2 writer, Controller ctr, int startbyte)
+	{
+		this.controller = ctr;
+		this.outwrite = writer;
+		this.mybyte = startbyte;
+		System.out.println("Hello " + ctr.getName());
+	}
+	
+	
+	public void run()
+	{
+		while(true)
+		{
+			controller.poll();
+			
+			cps = controller.getComponents();
+			for (int i=0;i < Array.getLength(cps); i++){
+				System.out.print("["+i+"-");
+				System.out.print(cps[]+"]")
+				}
+			System.out.print("/n");
+			}
+
+		}
+		
+	}
+
+}

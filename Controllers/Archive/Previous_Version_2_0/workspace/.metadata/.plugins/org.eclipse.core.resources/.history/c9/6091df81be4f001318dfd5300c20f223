@@ -1,0 +1,42 @@
+
+public class ComTest {
+
+	/**
+	 * @param args
+	 * @throws InterruptedException 
+	 */
+	public static void main(String[] args) throws InterruptedException {
+		SimpleIO io = new SimpleIO();
+		
+		int output = 1;
+		byte input = 0;
+		int control = 1;
+		boolean test = false;
+
+		
+		io.writeByte((byte)output);
+		try{
+			//Check to see if there is input
+			while(!(test = io.inputReader.ready())){
+				Thread.sleep(200);
+				System.out.println("Waiting, Read State is "+test);
+				control++;
+				if (control == 100){System.out.println("No Input from Arduino"); break;}
+			}
+			if(control != 100){
+				System.out.println("Read State is "+test);
+				input = (byte) io.inputReader.read();
+				System.out.println("Ardunio Return is:" + input);
+			}
+		}
+			//If there is a problem reader from the Arduino, let the user know and carry on
+		catch(Exception e){
+			System.out.println("Error: Arduino Input Communication");
+		}
+	
+		System.out.println("Closing Ardunio IO");
+		io.disconnect();
+	}
+}
+
+

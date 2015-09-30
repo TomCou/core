@@ -1,0 +1,117 @@
+import java.io.*;
+import java.util.*;
+import gnu.io.*;
+
+public class SimpleIO {
+	static Enumeration portList;
+	static CommPortIdentifier portId;
+	static String message = "Hello, world";
+	private byte transmitByte;
+	private SerialPort serialPort;
+	protected BufferedReader inputReader;
+	private OutputStream outputStream;	
+	protected boolean portFound = false;
+	
+	//Create a new Simple
+	public SimpleIO(){
+		connect();
+	}
+	
+	//Write a byte to the Arduino
+	public synchronized void writeByte(Byte data){
+		this.transmitByte = data;
+    	
+    	
+	    try {
+	    	System.out.println("Sending Data");
+	    	Thread.sleep(15); //Ensure byte is sent
+			//outputStream.write(messageString.getBytes());
+	    } 
+	    catch (IOException e) {}
+	    catch (Exception e){}
+	}
+	
+	public synchronized void connect(){
+		
+		System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0:/dev/ttyACM1:/dev/ttyACM2:/dev/ttyUSB0:/dev/ttyUSB1:/dev/ttyUSB2");
+		String  defaultPort = "/dev/ttyACM0";
+
+		//Get list of all possible ports
+		portList = CommPortIdentifier.getPortIdentifiers();
+		
+		//Check each possible port
+		
+		while (portList.hasMoreElements()) {
+		    portId = (CommPortIdentifier) portList.nextElement();
+		    //Verify that possible port is actually a serial port
+		    if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+		    	
+		    	//Verify possible port is the default port
+				if (portId.getName().equals(defaultPort)) {
+				    System.out.println("Found Default Port " + defaultPort);
+
+				    //Try to open port
+				    try {
+				    	serialPort = (SerialPort) portId.open("SimpleIO", 2000);
+				    	System.out.println("Opened Default Serial Port.");
+				    } 
+				    //If the port is in use, exit
+				    catch (PortInUseException e) {
+				    	System.out.println("Default Port in use.");
+				    	continue;
+				    } 
+				    
+				    //Configure the serial port
+				    try {
+				    	serialPort.setSerialPortParams(57600, 
+								       SerialPort.DATABITS_8, 
+								       SerialPort.STOPBITS_1, 
+								       SerialPort.PARITY_NONE);
+				    	System.out.println("Serial Port Configured.");
+				    } catch (UnsupportedCommOperationException e) {
+				    	System.out.println("Serial Port Configuration Failed.");
+				    }
+				    
+				    //Try to open output stream
+				    try {
+				    	outputStream = serialPort.getOutputStream();
+				    	System.out.println("Output Stream Opened");
+				    } 
+				    catch (IOException e) {
+				    	System.out.println("Output Stream Could Not Be Opened.");
+				    }
+				    
+				    //Try to open input reader
+				    try{
+				    	inputReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+				    	System.out.println("Input Stream Opened.");
+				    }
+				    catch (IOException e) {
+				    	System.out.println("Input Stream Could not Be Opened.");
+				    }
+				    
+				    System.out.println("Serial Port " + defaultPort +" Ready");
+				    portFound = true;
+				} 
+		    } 
+		} 
+
+		//Port was not found
+		if (!portFound) {
+		    System.out.println("\nDefault Port " + defaultPort + " not found.");
+		} 
+	}
+
+	public synchronized void disconnect(){
+		if (serialPort != null){
+			try{
+				outputStream.close();
+				inputReader.close();
+			}
+			catch(Exception e){}
+			
+			serialPort.removeEventListener();
+			serialPort.close();
+		}	
+	}
+}
