@@ -1,4 +1,6 @@
 /*
+ * use by UNBRobotics as core v1.0.0
+ * oct-4-2015
  * Robotics Motor Controller
 */
 
