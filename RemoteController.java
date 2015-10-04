@@ -1,3 +1,9 @@
+/* 
+ * use by UNBRobotics as core - v1.0.0
+ * oct-4-2015
+ */
+
+
 package UnbRoboticsCompetionv31;
 
 import net.java.games.input.Component;
